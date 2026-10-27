@@ -1,0 +1,320 @@
+import { HOUR, MIN } from './format';
+import type { Agent, AppState, HostRequest, OpenHouse } from './types';
+
+function nextSaturday(now: number): Date {
+  const d = new Date(now);
+  const daysAhead = (6 - d.getDay() + 7) % 7 || 7;
+  d.setDate(d.getDate() + daysAhead);
+  d.setHours(13, 0, 0, 0);
+  return d;
+}
+
+const at = (base: Date, hours: number, minutes = 0) => {
+  const x = new Date(base);
+  x.setHours(hours, minutes, 0, 0);
+  return x.getTime();
+};
+
+const agent = (a: Omit<Agent, 'initials'>): Agent => ({
+  ...a,
+  initials: a.name
+    .split(' ')
+    .map(w => w[0])
+    .join(''),
+});
+
+export function makeSeed(now: number): AppState {
+  const sat = nextSaturday(now);
+  const lastSat = new Date(sat);
+  lastSat.setDate(sat.getDate() - 7);
+
+  const agents: Agent[] = [
+    agent({
+      id: 'maya',
+      name: 'Maya Chen',
+      brokerage: 'Hudson & Pine Realty',
+      licenseStatus: 'verified',
+      yearsLicensed: 11,
+      phone: '(718) 555-0142',
+      hostRecord: { hosted: 0, noShows: 0, lateCancels: 0, rating: null, ratingCount: 0 },
+      listerRecord: { posted: 9, lateCancels: 0 },
+      hostedForIds: [],
+    }),
+    agent({
+      id: 'jordan',
+      name: 'Jordan Ellis',
+      brokerage: 'Brightline Realty',
+      licenseStatus: 'verified',
+      yearsLicensed: 3,
+      phone: '(347) 555-0199',
+      hostRecord: { hosted: 14, noShows: 0, lateCancels: 0, rating: 4.9, ratingCount: 11 },
+      listerRecord: { posted: 0, lateCancels: 0 },
+      hostedForIds: ['sam'],
+    }),
+    agent({
+      id: 'priya',
+      name: 'Priya Raman',
+      brokerage: 'Hudson & Pine Realty',
+      licenseStatus: 'verified',
+      yearsLicensed: 1,
+      phone: '(917) 555-0117',
+      hostRecord: { hosted: 0, noShows: 0, lateCancels: 0, rating: null, ratingCount: 0 },
+      listerRecord: { posted: 0, lateCancels: 0 },
+      hostedForIds: [],
+    }),
+    agent({
+      id: 'marcus',
+      name: 'Marcus Bell',
+      brokerage: 'Marrow & Co',
+      licenseStatus: 'verified',
+      yearsLicensed: 8,
+      phone: '(646) 555-0163',
+      hostRecord: { hosted: 31, noShows: 0, lateCancels: 1, rating: 4.7, ratingCount: 24 },
+      listerRecord: { posted: 2, lateCancels: 0 },
+      hostedForIds: ['maya', 'sam'],
+    }),
+    agent({
+      id: 'dana',
+      name: 'Dana Ortiz',
+      brokerage: 'Marrow & Co',
+      licenseStatus: 'verified',
+      yearsLicensed: 2,
+      phone: '(929) 555-0188',
+      hostRecord: { hosted: 3, noShows: 0, lateCancels: 0, rating: 4.5, ratingCount: 2 },
+      listerRecord: { posted: 0, lateCancels: 0 },
+      hostedForIds: [],
+    }),
+    agent({
+      id: 'sam',
+      name: 'Sam Okafor',
+      brokerage: 'Marrow & Co',
+      licenseStatus: 'verified',
+      yearsLicensed: 14,
+      phone: '(718) 555-0131',
+      hostRecord: { hosted: 0, noShows: 0, lateCancels: 0, rating: null, ratingCount: 0 },
+      listerRecord: { posted: 14, lateCancels: 0 },
+      hostedForIds: [],
+    }),
+    agent({
+      id: 'lena',
+      name: 'Lena Ruiz',
+      brokerage: 'Hudson & Pine Realty',
+      licenseStatus: 'verified',
+      yearsLicensed: 9,
+      phone: '(718) 555-0176',
+      hostRecord: { hosted: 0, noShows: 0, lateCancels: 0, rating: null, ratingCount: 0 },
+      listerRecord: { posted: 6, lateCancels: 1 },
+      hostedForIds: [],
+    }),
+  ];
+
+  const base = {
+    sellerOk: true,
+    hostId: null,
+    checkedInAt: null,
+    doneAt: null,
+    accessViewedAt: null,
+  };
+
+  const openHouses: OpenHouse[] = [
+    {
+      ...base,
+      id: 'oh-a',
+      listerId: 'maya',
+      address: '412 Sterling Pl',
+      unit: '#3',
+      neighborhood: 'Prospect Heights',
+      propertyType: 'condo',
+      price: 1_250_000,
+      beds: 2,
+      baths: 2,
+      startsAt: at(sat, 13),
+      endsAt: at(sat, 15),
+      fee: 100,
+      notes: 'Seller is motivated and open to offers this month. The second bedroom is staged as an office; the closet behind the desk is full size. Roof deck is shared, key on the kitchen hook.',
+      access: 'Lockbox on the gate rail, code 4417. Alarm is off. Leave the hallway light on when you go.',
+      status: 'open',
+      distanceMi: 0.6,
+    },
+    {
+      ...base,
+      id: 'oh-b',
+      listerId: 'maya',
+      address: '88 Carroll St',
+      unit: null,
+      neighborhood: 'Carroll Gardens',
+      propertyType: 'townhouse',
+      price: 2_400_000,
+      beds: 4,
+      baths: 3,
+      startsAt: now + 10 * MIN,
+      endsAt: now + 10 * MIN + 2 * HOUR,
+      fee: null,
+      notes: 'Garden level is a legal rental with its own entrance. Boiler was replaced in 2024. The owners are home upstairs until noon and will be out by the time you arrive.',
+      access: 'Keypad on the front door, code 2290#. The garden gate sticks; lift as you push.',
+      status: 'booked',
+      hostId: 'jordan',
+      distanceMi: 1.1,
+    },
+    {
+      ...base,
+      id: 'oh-c',
+      listerId: 'maya',
+      address: '215 Park Pl',
+      unit: '#5B',
+      neighborhood: 'Prospect Heights',
+      propertyType: 'co-op',
+      price: 895_000,
+      beds: 1,
+      baths: 1,
+      startsAt: now - 20 * MIN,
+      endsAt: now + 100 * MIN,
+      fee: 75,
+      notes: 'Board allows 80% financing. Pied-a-terre not permitted. Laundry is in the basement.',
+      access: 'Doorman building. Ask for the 5B key at the desk; you are on the list.',
+      status: 'booked',
+      hostId: 'dana',
+      distanceMi: 0.9,
+    },
+    {
+      ...base,
+      id: 'oh-d',
+      listerId: 'sam',
+      address: '140 Clinton Ave',
+      unit: '#2R',
+      neighborhood: 'Clinton Hill',
+      propertyType: 'condo',
+      price: 1_100_000,
+      beds: 2,
+      baths: 1,
+      startsAt: at(sat, 11),
+      endsAt: at(sat, 13),
+      fee: null,
+      notes: 'Corner unit, south and west light. Common charges include heat and hot water.',
+      access: 'Super will let you in at 10:45. His number is in the handoff after you are approved.',
+      status: 'open',
+      distanceMi: 0.8,
+    },
+    {
+      ...base,
+      id: 'oh-e',
+      listerId: 'lena',
+      address: '561 4th St',
+      unit: null,
+      neighborhood: 'Park Slope',
+      propertyType: 'house',
+      price: 3_200_000,
+      beds: 5,
+      baths: 3.5,
+      startsAt: at(sat, 14),
+      endsAt: at(sat, 16),
+      fee: 150,
+      notes: 'Two-family being delivered vacant. The upper duplex and the garden rental show separately; start upstairs.',
+      access: 'Lockbox on the stoop railing. Code shared after approval.',
+      status: 'open',
+      distanceMi: 1.4,
+    },
+    {
+      ...base,
+      id: 'oh-f',
+      listerId: 'sam',
+      address: '77 Dean St',
+      unit: '#4',
+      neighborhood: 'Boerum Hill',
+      propertyType: 'co-op',
+      price: 700_000,
+      beds: 1,
+      baths: 1,
+      startsAt: now + 30 * MIN,
+      endsAt: now + 30 * MIN + 2 * HOUR,
+      fee: null,
+      notes: 'Walk-up, fourth floor. Sponsor unit, no board interview.',
+      access: 'Shared after approval.',
+      status: 'open',
+      distanceMi: 0.5,
+    },
+    {
+      ...base,
+      id: 'oh-g',
+      listerId: 'maya',
+      address: '19 S Elliott Pl',
+      unit: null,
+      neighborhood: 'Fort Greene',
+      propertyType: 'multi-family',
+      price: 2_900_000,
+      beds: 6,
+      baths: 4,
+      startsAt: at(lastSat, 12),
+      endsAt: at(lastSat, 14),
+      fee: null,
+      notes: 'Three units, all tenants notified.',
+      access: 'Lockbox on the basement gate, code 8831.',
+      status: 'done',
+      hostId: 'marcus',
+      checkedInAt: at(lastSat, 11, 52),
+      doneAt: at(lastSat, 14, 8),
+      accessViewedAt: at(lastSat, 9, 30),
+      distanceMi: 1.9,
+    },
+  ];
+
+  const requests: HostRequest[] = [
+    {
+      id: 'req-1',
+      openHouseId: 'oh-a',
+      hostId: 'jordan',
+      note: 'I live four blocks away and host in Prospect Heights most weekends. Happy to send you a quick visitor count afterward.',
+      createdAt: now - 26 * HOUR,
+      status: 'pending',
+    },
+    {
+      id: 'req-2',
+      openHouseId: 'oh-a',
+      hostId: 'priya',
+      note: 'I just joined Hudson & Pine and would love to host one of yours. I have hosted twice for my team lead, so I know the drill.',
+      createdAt: now - 20 * HOUR,
+      status: 'pending',
+    },
+    {
+      id: 'req-3',
+      openHouseId: 'oh-a',
+      hostId: 'marcus',
+      note: 'Covered your Fort Greene multi-family last week. Free Saturday afternoon if you want a repeat.',
+      createdAt: now - 6 * HOUR,
+      status: 'pending',
+    },
+    {
+      id: 'req-4',
+      openHouseId: 'oh-b',
+      hostId: 'jordan',
+      note: 'Carroll Gardens is my patch. I can be there early to air the place out.',
+      createdAt: now - 3 * 24 * HOUR,
+      status: 'approved',
+    },
+    {
+      id: 'req-5',
+      openHouseId: 'oh-c',
+      hostId: 'dana',
+      note: 'Free today, can take it.',
+      createdAt: now - 2 * 24 * HOUR,
+      status: 'approved',
+    },
+    {
+      id: 'req-6',
+      openHouseId: 'oh-g',
+      hostId: 'marcus',
+      note: 'Fort Greene is near me. Glad to help.',
+      createdAt: now - 10 * 24 * HOUR,
+      status: 'approved',
+    },
+  ];
+
+  return {
+    agents: Object.fromEntries(agents.map(a => [a.id, a])),
+    openHouses: Object.fromEntries(openHouses.map(o => [o.id, o])),
+    requests: Object.fromEntries(requests.map(r => [r.id, r])),
+    personaId: 'maya',
+    screen: { name: 'home' },
+    flash: null,
+  };
+}
