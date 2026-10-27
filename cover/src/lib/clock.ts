@@ -1,7 +1,8 @@
 /**
- * The clock the demo runs on. Seed times are relative to now so the day-of flow is always
- * live, which would put today's open houses at 9 PM for someone opening the page in the
- * evening. Outside 9 AM to 5 PM the clock starts at 11 AM today and runs forward from there.
+ * The clock the demo runs on. Seed times are relative to it so the day-of flow is live on load,
+ * and it stays fixed at the load time so nothing in the walkthrough expires while the tab sits
+ * open. Opened outside 9 AM to 5 PM, it reads 11 AM today instead, so the "today" open houses
+ * aren't at 9 PM.
  */
 function daytimeOffset(real: number): number {
   const hour = new Date(real).getHours();
@@ -11,9 +12,11 @@ function daytimeOffset(real: number): number {
   return target.getTime() - real;
 }
 
-const offset = daytimeOffset(Date.now());
+const loadedAt = Date.now();
+const offset = daytimeOffset(loadedAt);
+const demoNow = loadedAt + offset;
 
-export const clockNow = () => Date.now() + offset;
+export const clockNow = () => demoNow;
 
 /** True when the demo clock differs from the viewer's own. */
 export const clockShifted = offset !== 0;

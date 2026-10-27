@@ -24,9 +24,7 @@ Live demo: https://cover-fawn-iota.vercel.app
 
 ## Walkthrough (about three minutes)
 
-Switch personas with the Maya / Jordan control in the header. The circular arrow resets the data. Seed times are relative to the moment you open the page, so the day-of flow is always live. Opened outside 9 AM to 5 PM, the demo runs on a daytime clock that starts at 11 AM, and Home shows the demo time.
-
-Do it in one sitting, or press reset first if you come back later, so the "today" times line up.
+Switch personas with the Maya / Jordan control in the header. The circular arrow resets the data. Seed times are relative to the moment you open the page, so the day-of flow is always live, and the demo clock then stays put, so nothing expires while the tab is open. Opened outside 9 AM to 5 PM, the demo clock reads 11 AM instead, and Home shows the demo time.
 
 1. **As Maya (listing agent):** Home shows what needs her. Open **412 Sterling Pl**, where three agents want to host. Compare the cards (license, brokerage, raw track record, their note) and approve Jordan. The others stay on a waitlist, and the access details go to Jordan only.
 2. **Switch to Jordan (host):** Find open houses. 77 Dean St is blocked because it overlaps 88 Carroll St, which he's hosting today. Filter to paid: 561 4th St is blocked too, because it overlaps 412 Sterling Pl, which Maya just approved him for. Clear the filter and request **140 Clinton Ave**.
@@ -63,8 +61,7 @@ src/
     reducer.ts          Action union, guards, pure reducer
     derive.ts           read models: effective status, waitlist, conflicts, action items
     format.ts           money, time ranges, relative time, date inputs
-    clock.ts            the demo clock: real time by day, 11 AM onward otherwise
-    useNow.ts           ticks every 30s so time-based states advance on screen
+    clock.ts            the demo clock: fixed at load time, or 11 AM if opened outside the day
     ui.ts               shared class strings for fields, labels, links, focus rings
     cn.ts               clsx + tailwind-merge
   components/
@@ -119,9 +116,9 @@ The waitlist is not stored. It is every request still pending on a booked open h
 
 ### Time
 
-Seed data is built from the demo clock at load, so "today" open houses are always today, one is always mid-window for the day-of flow, and one is always past its no-check-in threshold. `useNow` re-renders every 30 seconds so those thresholds cross while the page is open.
+Seed data is built from the demo clock at load, so "today" open houses are always today, one is always mid-window for the day-of flow, and one is always past its no-check-in threshold.
 
-The demo clock (`clock.ts`) is the real time between 9 AM and 5 PM. Outside those hours it starts at 11 AM today and runs forward, so someone opening the demo in the evening doesn't see open houses at 9 PM.
+The demo clock (`clock.ts`) is fixed at the moment the page loads, so none of those states expire while the tab sits open; reload or reset to start over. Between 9 AM and 5 PM it is the real load time. Outside those hours it reads 11 AM today, so someone opening the demo in the evening doesn't see open houses at 9 PM.
 
 ## Design rules
 

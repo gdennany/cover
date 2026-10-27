@@ -7,7 +7,6 @@ import { reducer } from '@/lib/reducer';
 import { makeSeed } from '@/lib/seed';
 import type { Screen } from '@/lib/types';
 import { FOCUS_CN } from '@/lib/ui';
-import { useNow } from '@/lib/useNow';
 import { Find } from '@/screens/Find';
 import { Home } from '@/screens/Home';
 import { OpenHouseScreen } from '@/screens/OpenHouse';
@@ -27,7 +26,7 @@ const NAV: { label: string; screen: Screen }[] = [
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, undefined, () => makeSeed(clockNow()));
-  const now = useNow();
+  const now = clockNow();
   const me = state.agents[state.personaId];
   const clearFlash = useCallback(() => dispatch({ type: 'flash', message: null }), []);
   const screen = state.screen;
