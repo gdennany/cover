@@ -21,9 +21,9 @@ const VALUE_TONE = {
 export function Legend({ rows, className }: { rows: LegendRow[]; className?: string }) {
   if (rows.length === 0) return null;
   return (
-    <div role="list" className={cn('flex flex-wrap gap-x-8 gap-y-3', className)}>
+    <div role="list" className={cn('grid grid-cols-3 gap-x-4 gap-y-3 sm:flex sm:flex-wrap sm:gap-x-8', className)}>
       {rows.map(row => (
-        <div key={row.key} role="listitem" className="min-w-[96px]">
+        <div key={row.key} role="listitem" className="sm:min-w-[96px]">
           <div className={cn('font-display text-xl font-semibold leading-none tabular-nums', VALUE_TONE[row.tone ?? 'default'])}>{row.value}</div>
           <div className="mt-1 text-xs text-mist">{row.label}</div>
         </div>

@@ -1,6 +1,6 @@
 # Cover: Open House Coverage Marketplace
 
-**Research & Product Definition** · Grant Dennany · [Google Doc](https://docs.google.com/document/d/1mMTGO8rnrABQH-BgadnwEUKx7VrECVPMMMxMzwavDVE/edit?usp=sharing) · [Sources](#heading=h.svhcfjmu44ej)
+**Research & Product Definition** · Grant Dennany · [Google Doc](https://docs.google.com/document/d/1mMTGO8rnrABQH-BgadnwEUKx7VrECVPMMMxMzwavDVE/edit?usp=sharing) · [Sources](#heading=h.svhcfjmu44ej) · [Live demo](https://cover-fawn-iota.vercel.app)
 
 ## Product Summary
 
@@ -18,11 +18,11 @@
 
 ## Problem Statement
 
-When a listing agent can’t make one of their open houses, they post in their brokerages group chats and hope a colleague can cover for them. This approach has one main limitation:
+When a listing agent can’t make one of their open houses, they post in their brokerage's group chats and hope a colleague can cover for them. This approach has one main limitation:
 
 - Reach & Discovery: the request only reaches their colleagues. Agents at other brokerages who would happily cover never see the request.
 
-What posting in your brokerages group chat does well today is **handling trust**. Every person in that chat is a colleague in the same brokerage, and often known at a personal level. 
+What posting in your brokerage's group chat does well today is **handling trust**. Every person in that chat is a colleague in the same brokerage, and often known at a personal level. 
 
 Therefore, the core problem this marketplace should solve is to facilitate open house coverage without sacrificing trust.
 
@@ -117,14 +117,14 @@ Navigation is organized by task, not by role: "Post an open house" and "Find ope
 
 For when a step fails (no requests, a cancellation, a no-show), see [What Could Go Wrong](#handling-what-could-go-wrong) section.
 
-## Facilitate Trust: Handing Your Listing to a Stranger {#facilitate-trust:-handing-your-listing-to-a-stranger}
+## Facilitate Trust: Handing Your Listing to a Stranger 
 
 Put yourself in the listing agent's shoes. Your seller trusted you with their home, and you're about to hand it to someone you've never met. These are the questions I'd ask, in order, and how Cover answers each:
 
 | As the listing agent, I'd ask… | What Cover shows or does |
 | :---- | :---- |
 | "Are they real and licensed?" | The license is checked against the state record: active status, name and brokerage match. Unverified agents can browse but can't request to host. |
-| "Have they done this before, and did they show up?" | Their track record as a host: number hosted, no shows, late, cancels, rating.  |
+| "Have they done this before, and did they show up?" | Their track record as a host: number hosted, no shows, late cancels, platform rating.  |
 | "Will they represent my listing well?" | Ratings and comments from other listing agents, years licensed, and their request note to me. |
 | "Do we have anything in common?" | "Same brokerage" and "Hosted for you before" badges |
 | "Do I stay in control?" | I pick the host, nobody is auto assigned. Access details go only to the host I approve. Terms are set before I approve. |
@@ -148,22 +148,32 @@ Put yourself in the listing agent's shoes. Your seller trusted you with their ho
 
 In the clickable demo, license status is mock data.
 
-## Compensation {#compensation}
+## Compensation
 
-**Leads are the default payment.** The host keeps the unrepresented buyer leads from the open house. We bet that’s enough for most open houses, but it's unproven.
+Agents already pay each other in a few ways. Here's how each fits covering an open house:
+
+| Form | How it works | Fit | MVP |
+| :---- | :---- | :---- | :---- |
+| Buyer leads | The host keeps the unrepresented buyers who walk in | Worth little to an established listing agent, a lot to a newer host with no pipeline. Costs the listing agent nothing. | Default |
+| Flat fee | A fixed amount on the post, e.g. $100 | Easy to judge on a Saturday morning. Covers slow listings and short notice. | Optional, paid outside Cover |
+| Referral fee | A share of commission when a buyer from the open house closes | Pays months later, if ever, and needs attribution and broker paperwork. Too uncertain to decide a Saturday on. | Only if agents ask |
+| Swap credits | Cover one, get one covered | Hosts are mostly newer agents with few listings, so coverage credit is worth little to them. | Only if agents ask |
+
+**Leads are the default payment.** The host keeps the unrepresented buyer leads from the open house. We bet that's enough for most open houses, but it's unproven.
 
 **A flat fee is the fallback payment.**
-
-- For open houses where leads may not be enough, like a slow listing or short notice, the listing agent can add a fee when posting.  
-- The fee shows on the post, and hosts can filter to paid open houses, so each host decides what's worth their time.  
+- For open houses where leads may not be enough, like a slow listing or short notice, the listing agent can add a fee when posting.
+- The fee shows on the post, and hosts can filter to paid open houses, so each host decides what's worth their time.
 - It locks once a host is approved.
+
+**Open question: a buyer for this listing.** The most valuable lead is a visitor who wants to make an offer on this home. The listing agent may want to represent them, and the host came for exactly that lead. Left unstated, it's the most likely dispute over leads. The likely fix is a term the listing agent sets when posting ("the host can represent them" or "refer them to me", potentially including referral fee terms) that locks on approval, but how agents handle this today should come from agent calls first (see [Open Questions](#assumptions--open-questions)).
 
 **No payments in the MVP.**
 
-- The fee is part of the written terms both agents see, but Cover doesn't move money or track whether it's been paid.  
+- The fee is part of the written terms both agents see, but Cover doesn't move money or track whether it's been paid.
 - Payments and holding fees are V2. Referral fees and swap credits only if agents ask (see [V2 Priorities](#v2-priorities)).
 
-## Handling What Could Go Wrong {#handling-what-could-go-wrong}
+## Handling What Could Go Wrong
 
 | Scenario | How we notice | How Cover handles it |
 | :---- | :---- | :---- |
@@ -223,8 +233,9 @@ Refer [V2 Priorities Section](#v2-priorities).
 - Does your brokerage restrict outside agents from hosting its listings?  
 - How far ahead do you usually know you need coverage?  
 - Who keeps open house leads by convention in your office?
+- If a visitor wants to make an offer on this listing, who represents them: the host or the listing agent?
 
-## Risks, Validation & Metrics {#risks,-validation-&-metrics}
+## Risks, Validation & Metrics
 
 | Risk / assumption | Why it matters | How we'd test or mitigate it |
 | :---- | :---- | :---- |
@@ -244,14 +255,14 @@ Refer [V2 Priorities Section](#v2-priorities).
   - % of listing agents who post again within 30 days  
   - % of hosts who host a second time
 
-## V2 Priorities {#v2-priorities}
+## V2 Priorities
 
 Ordered by the north star metric (fill rate) and the biggest risks from the [above section](#risks,-validation-&-metrics). Each item has a signal from the MVP that will tell us when it's time to build it.
 
 | Theme | What we'd build | Build it when… |
 | :---- | :---- | :---- |
-| Fill more open houses faster | Alerts based on when and where a host is free ("Saturdays, within 2 miles"); text alerts for urgent posts; a wider search radius when a post sits unfilled | Posts go unfilled or wait too long for a first request |
-| Make the leads count | Visitor sign in by QR code, so leads land in the host's account a short feedback report the listing agent can send their seller | Hosting agents don’t return. It tests the core bet (are leads enough?) with real numbers and gives listing agents a reason to stay on Cover. |
+| Fill more open houses faster | Alerts based on when and where a host is free ("Saturdays, within 2 miles"), text alerts for urgent posts, a wider search radius when a post sits unfilled | Posts go unfilled or wait too long for a first request |
+| Make the leads count | Visitor sign in by QR code, so leads land in the host's account and a short feedback report the listing agent can send their seller | Hosting agents don’t return. It tests the core bet (are leads enough?) with real numbers and gives listing agents a reason to stay on Cover. |
 | Trust at scale | Auto approve hosts a listing agent already trusts (hosted for them before, same brokerage), colleague vouching for first time hosts, license lookups in more states, location confirmed check in (the host's phone has to be at the property) | Listing agents spend too long reviewing requests, first time hosts rarely get approved, or there are disputes over whether a host really showed up |
 | Payments | Fees paid through brokerages, paid tracking, a "pays on time" record, holding fees against no shows | A meaningful share of posts include a fee, or unpaid fee reports pile up |
 | Fuller handoff | Checklists, talking points, calendar sync, day of logistics | Problems on the day trace back to the handoff |
@@ -261,6 +272,8 @@ Ordered by the north star metric (fill rate) and the biggest risks from the [abo
 
 ## Demo Screens
 
+[Live demo](https://cover-fawn-iota.vercel.app)
+
 A clickable prototype built on mock data: the flows and states are real, the backend, login, and license lookup are not. A persona switcher lets a reviewer walk through both sides: **Maya** (listing agent) and **Jordan** (host). 
 
 | \# | Screen | Who | Why this one |
@@ -269,9 +282,9 @@ A clickable prototype built on mock data: the flows and states are real, the bac
 | 2 | **Post an open house:** listing details (incl. property type and price), time, payment terms, notes, access details | Listing agent | The first post has to work: quick and intuitive to post, solves the happy path. |
 | 3 | **Find open houses:** nearby open houses by time, distance, payment, and property type, each showing price; filter to paid or by property type | Host | The reach half of the core problem, the host decides what's worth their time |
 | 4 | **Day of:** access details, check in, mark done, plus the listing agent's "checked in" view | Host | Shows the no show protection working |
-| 5 | **Home** (what needs your attention, across both roles) and **Agent profile** | Both | Ties the flows together |
+| 5 | **Home:** what needs your attention, across both roles | Both | Ties the flows together. There's no separate profile screen: the listing agent sees a host's record as a host card on each request, and the host sees the listing agent's record on each post. |
 
-## Sources {#sources}
+## Sources
 
 1. NAR 2026 Member Profile (2025 data), via [HousingWire](https://www.housingwire.com/articles/nar-2026-member-profile-experience/) and the [NAR press release](https://www.nar.realtor/newsroom/experienced-realtors-anchor-the-industry-as-housing-affordability-remains-top-hurdle-new-nar-report)  
 2. NAR 2019 Member Profile, via [HomeSpotter](https://blog.homespotter.com/2020/03/02/four-groups-and-potential-clients-agents-are-overlooking-at-open-houses/)  
@@ -299,5 +312,15 @@ A few ground rules:
 
 ## Appendix B: Tools Used
 
-- **Claude Code (Opus 5.5)** as a research and writing partner: web research on NAR data, drafting and reviewing this doc section by section, and building the clickable screens.  
-- I pointed Claude Code at my own design rule book and a lint that fails the build on gradients and em dashes"  to style the mock screens.
+**Tools:** Claude Code (Opus 5.5) in the terminal, Claude in Chrome and Playwright to click through the demo at desktop and phone widths, Vercel for hosting.
+
+**How I used them:**
+* **Research:** Claude web search for NAR data. When its first draft invented user types, I asked it to back each claim with a source. 
+* **Doc:** I defined the general structure and flow, and then worked through options/tradeoffs one section at a time with Claude. 
+* **Build:** Claude wrote most of the code. I set the scope: one reducer as a state machine, mocked data, minimal dependencies
+* **Design:** I pointed it at the design kit from my last project. That's a written list of things the UI must never do, including a single "trust score" in place of the raw track record. It also includes the color and spacing tokens, and a lint that fails the build on visual rule breaks like gradients and em dashes.
+* **Build and Review:** Multi agent orchestration turned the product doc into an implementation plan, implementer agent, code review and simplification agent, design review agent, sticking to the plan & keeping implementation minimal critique agent.
+
+**What I checked by hand:** every flow in the demo as both personas, every number in User Definitions against its source, and every copy string against the "no filler stats" rule (it missed one; I fixed it).
+
+**Time Spent:** 4-5 hours total. ~3 hours defining product, ~1-2 hours generating & reviewing product into code.

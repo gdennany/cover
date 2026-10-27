@@ -20,14 +20,18 @@ pnpm build        # tsc --noEmit && vite build, output in dist/
 
 Deploy is a static Vite build on Vercel: `vercel --prod` from `cover/`.
 
+Live demo: https://cover-fawn-iota.vercel.app
+
 ## Walkthrough (about three minutes)
 
-Switch personas with the Maya / Jordan control in the header. The circular arrow resets the data. Seed times are relative to the moment you open the page, so the day-of flow is always live.
+Switch personas with the Maya / Jordan control in the header. The circular arrow resets the data. Seed times are relative to the moment you open the page, so the day-of flow is always live. Opened outside 9 AM to 5 PM, the demo runs on a daytime clock that starts at 11 AM, and Home shows the demo time.
+
+Do it in one sitting, or press reset first if you come back later, so the "today" times line up.
 
 1. **As Maya (listing agent):** Home shows what needs her. Open **412 Sterling Pl**, where three agents want to host. Compare the cards (license, brokerage, raw track record, their note) and approve Jordan. The others stay on a waitlist, and the access details go to Jordan only.
-2. **Switch to Jordan (host):** open **88 Carroll St**, today. Show the access details (the view is logged), check in at the door, mark it done.
-3. **Back to Maya:** 88 Carroll St shows checked in and done. **215 Park Pl** has no check-in: call the host, or mark a no-show. The strike lands on their record.
-4. **As Jordan:** Find open houses. Filter to paid and request 561 4th St. 77 Dean St is blocked because it overlaps the one he is hosting.
+2. **Switch to Jordan (host):** Find open houses. 77 Dean St is blocked because it overlaps 88 Carroll St, which he's hosting today. Filter to paid: 561 4th St is blocked too, because it overlaps 412 Sterling Pl, which Maya just approved him for. Clear the filter and request **140 Clinton Ave**.
+3. **Still as Jordan:** from Home, open **88 Carroll St**. Show the access details (the view is logged), check in at the door, mark it done.
+4. **Back to Maya:** 88 Carroll St shows checked in and done. **215 Park Pl** has no check-in: call the host, or mark a no-show. The strike lands on their record.
 5. **As Maya:** Post an open house. It lands on the new post's empty state with the "add a fee" nudge.
 
 What is mock: the data, login, and the license lookup. What is real: every flow, state, guard, and empty state the product doc describes.
@@ -59,6 +63,7 @@ src/
     reducer.ts          Action union, guards, pure reducer
     derive.ts           read models: effective status, waitlist, conflicts, action items
     format.ts           money, time ranges, relative time, date inputs
+    clock.ts            the demo clock: real time by day, 11 AM onward otherwise
     useNow.ts           ticks every 30s so time-based states advance on screen
     ui.ts               shared class strings for fields, labels, links, focus rings
     cn.ts               clsx + tailwind-merge
@@ -114,7 +119,9 @@ The waitlist is not stored. It is every request still pending on a booked open h
 
 ### Time
 
-Seed data is built from `Date.now()` at load, so "today" open houses are always today, one is always mid-window for the day-of flow, and one is always past its no-check-in threshold. `useNow` re-renders every 30 seconds so those thresholds cross while the page is open.
+Seed data is built from the demo clock at load, so "today" open houses are always today, one is always mid-window for the day-of flow, and one is always past its no-check-in threshold. `useNow` re-renders every 30 seconds so those thresholds cross while the page is open.
+
+The demo clock (`clock.ts`) is the real time between 9 AM and 5 PM. Outside those hours it starts at 11 AM today and runs forward, so someone opening the demo in the evening doesn't see open houses at 9 PM.
 
 ## Design rules
 

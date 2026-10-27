@@ -5,6 +5,8 @@ import { PageHead } from '@/components/kit/PageHead';
 import { Panel, PanelBar } from '@/components/kit/Panel';
 import { PressButton } from '@/components/kit/PressButton';
 import { Stamp } from '@/components/kit/Stamp';
+import { clockShifted } from '@/lib/clock';
+import { MIDDOT, fmtTime } from '@/lib/format';
 import { actionItems, myHosting, myOpenHouses, myRequests, pendingFor, type Tone } from '@/lib/derive';
 import type { Action } from '@/lib/reducer';
 import type { AppState } from '@/lib/types';
@@ -27,7 +29,7 @@ export function Home({ state, now, dispatch }: { state: AppState; now: number; d
   return (
     <div className="space-y-10">
       <PageHead
-        kicker={`Home ${String.fromCharCode(0xb7)} ${me.name}`}
+        kicker={`Home ${MIDDOT} ${me.name}${clockShifted ? ` ${MIDDOT} Demo time ${fmtTime(now)}` : ''}`}
         title={items.length ? `${items.length} thing${items.length === 1 ? '' : 's'} need${items.length === 1 ? 's' : ''} you` : 'Nothing needs you right now'}
         description="Across the open houses you post and the ones you host."
         aside={

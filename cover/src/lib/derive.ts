@@ -108,7 +108,8 @@ export function actionItems(s: AppState, agentId: string, now: number): ActionIt
   for (const oh of myHosting(s, agentId)) {
     const status = effectiveStatus(oh, now);
     if (status === 'booked' && oh.startsAt - now < 24 * 60 * MIN) {
-      items.push({ key: `${oh.id}-host`, ohId: oh.id, tone: 'accent', text: `You host ${oh.address} ${now < oh.startsAt ? `at ${fmtTime(oh.startsAt)}` : 'now'}. Check-in opens ${fmtTime(oh.startsAt - CHECKIN_OPENS_MIN * MIN)}.` });
+      const opens = oh.startsAt - CHECKIN_OPENS_MIN * MIN;
+      items.push({ key: `${oh.id}-host`, ohId: oh.id, tone: 'accent', text: `You host ${oh.address} ${now < oh.startsAt ? `at ${fmtTime(oh.startsAt)}` : 'now'}. ${now < opens ? `Check-in opens ${fmtTime(opens)}.` : 'Check in when you get there.'}` });
     } else if (status === 'checkedIn') {
       items.push({ key: `${oh.id}-hosting`, ohId: oh.id, tone: 'verified', text: `You're checked in at ${oh.address}. Mark it done when you leave.` });
     }

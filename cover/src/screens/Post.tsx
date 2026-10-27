@@ -82,17 +82,17 @@ export function Post({ state, now, dispatch }: { state: AppState; now: number; d
 
       <Panel>
         <PanelBar title="The listing" />
-        <div className="grid gap-4 p-5 sm:grid-cols-6">
-          <Field label="Address" htmlFor="address" error={show('address')} className="sm:col-span-4">
+        <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-6">
+          <Field label="Address" htmlFor="address" error={show('address')} className="col-span-2 sm:col-span-4">
             <input id="address" value={address} onChange={e => setAddress(e.target.value)} placeholder="412 Sterling Pl" className={cn(FIELD_CN, show('address') && FIELD_INVALID_CN)} />
           </Field>
-          <Field label="Unit" htmlFor="unit" className="sm:col-span-2">
+          <Field label="Unit" htmlFor="unit" className="col-span-2">
             <input id="unit" value={unit} onChange={e => setUnit(e.target.value)} placeholder="#3" className={FIELD_CN} />
           </Field>
-          <Field label="Neighborhood" htmlFor="neighborhood" error={show('neighborhood')} className="sm:col-span-3">
+          <Field label="Neighborhood" htmlFor="neighborhood" error={show('neighborhood')} className="col-span-2 sm:col-span-3">
             <input id="neighborhood" value={neighborhood} onChange={e => setNeighborhood(e.target.value)} placeholder="Prospect Heights" className={cn(FIELD_CN, show('neighborhood') && FIELD_INVALID_CN)} />
           </Field>
-          <Field label="Property type" htmlFor="type" className="sm:col-span-3">
+          <Field label="Property type" htmlFor="type" className="col-span-2 sm:col-span-3">
             <select id="type" value={type} onChange={e => setType(e.target.value as PropertyType)} className={FIELD_CN}>
               {PROPERTY_TYPES.map(t => (
                 <option key={t.value} value={t.value}>
@@ -101,7 +101,7 @@ export function Post({ state, now, dispatch }: { state: AppState; now: number; d
               ))}
             </select>
           </Field>
-          <Field label="Asking price" htmlFor="price" error={show('price')} className="sm:col-span-2">
+          <Field label="Asking price" htmlFor="price" error={show('price')} className="col-span-2">
             <input id="price" inputMode="numeric" value={price} onChange={e => setPrice(e.target.value.replace(/[^\d]/g, ''))} placeholder="1250000" className={cn(FIELD_CN, 'tabular-nums', show('price') && FIELD_INVALID_CN)} />
           </Field>
           <Field label="Beds" htmlFor="beds" className="sm:col-span-2">
@@ -115,8 +115,8 @@ export function Post({ state, now, dispatch }: { state: AppState; now: number; d
 
       <Panel>
         <PanelBar title="When" />
-        <div className="grid gap-4 p-5 sm:grid-cols-3">
-          <Field label="Date" htmlFor="date" error={show('when')}>
+        <div className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-3">
+          <Field label="Date" htmlFor="date" error={show('when')} className="col-span-2 sm:col-span-1">
             <input id="date" type="date" value={date} onChange={e => setDate(e.target.value)} className={cn(FIELD_CN, show('when') && FIELD_INVALID_CN)} />
           </Field>
           <Field label="Starts" htmlFor="start">

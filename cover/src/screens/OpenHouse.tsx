@@ -11,7 +11,7 @@ import { Band, Panel, PanelBar } from '@/components/kit/Panel';
 import { BUTTON_LINK_CN, PressButton } from '@/components/kit/PressButton';
 import { Stamp } from '@/components/kit/Stamp';
 import { StatusChip } from '@/components/kit/StatusChip';
-import { NO_CHECKIN_ALERT_MIN, NO_SHOW_MIN, displayStatus, effectiveStatus, pendingFor, requestBy, requestsFor } from '@/lib/derive';
+import { CHECKIN_OPENS_MIN, NO_CHECKIN_ALERT_MIN, NO_SHOW_MIN, displayStatus, effectiveStatus, pendingFor, requestBy, requestsFor } from '@/lib/derive';
 import { MIDDOT, MIN, fmtMoney, fmtTime, fmtWhen } from '@/lib/format';
 import { canApprove, canCheckIn, canHostCancel, canListerCancel, canMarkNoShow, canRequest, isLate, type Action } from '@/lib/reducer';
 import { propertyLabel, type Agent, type AppState, type OpenHouse } from '@/lib/types';
@@ -34,13 +34,14 @@ export function OpenHouseScreen({ state, id, now, dispatch }: { state: AppState;
   const lister = state.agents[oh.listerId];
   const isLister = me.id === oh.listerId;
   const status = displayStatus(oh, now);
+  const back = <BackHome onClick={() => dispatch({ type: 'go', screen: { name: 'home' } })} />;
+
+  // The approved host gets the day-of view on its own: one column, the next step first.
+  if (!isLister && oh.hostId === me.id) return <DayOf state={state} oh={oh} lister={lister} now={now} dispatch={dispatch} back={back} />;
 
   return (
     <div className="space-y-6">
-      <button type="button" onClick={() => dispatch({ type: 'go', screen: { name: 'home' } })} className={cn('inline-flex min-h-9 items-center gap-0.5 text-sm no-underline hover:underline', INLINE_LINK_CN)}>
-        <ChevronLeft size={16} />
-        Home
-      </button>
+      {back}
 
       <Panel>
         <div className="flex gap-4 p-5">
@@ -71,6 +72,15 @@ export function OpenHouseScreen({ state, id, now, dispatch }: { state: AppState;
 
       {isLister ? <ListerBody state={state} oh={oh} me={me} now={now} dispatch={dispatch} /> : <HostBody state={state} oh={oh} me={me} lister={lister} now={now} dispatch={dispatch} />}
     </div>
+  );
+}
+
+function BackHome({ onClick }: { onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className={cn('inline-flex min-h-9 items-center gap-0.5 text-sm no-underline hover:underline', INLINE_LINK_CN)}>
+      <ChevronLeft size={16} />
+      Home
+    </button>
   );
 }
 
@@ -176,8 +186,8 @@ function ListerBody({ state, oh, me, now, dispatch }: { state: AppState; oh: Ope
 
         {pending.length === 0 ? (
           <Panel className="p-5">
-            <p className="text-[15px] leading-relaxed text-ink">Verified agents within 10 miles were notified when you posted. Most posts get a first request within a day.</p>
-            <p className="mt-2 text-sm leading-relaxed text-mist">If it's still empty 24 hours before the start, adding a fee usually helps: hosts can filter to paid open houses.</p>
+            <p className="text-[15px] leading-relaxed text-ink">Verified agents within 10 miles were notified when you posted. Requests show up here as they come in.</p>
+            <p className="mt-2 text-sm leading-relaxed text-mist">If it's still empty 24 hours before the start, consider adding a fee: hosts can filter to paid open houses.</p>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               {oh.fee ? (
                 <span className="text-sm font-medium">${oh.fee} fee is on the post.</span>
@@ -250,24 +260,26 @@ function ListerBody({ state, oh, me, now, dispatch }: { state: AppState; oh: Ope
             <Band tone="verified">
               <Check size={16} className="mt-0.5 shrink-0" />
               <span>
-                {first(host)} is hosting. You'll be told the moment they check in at the door{now < oh.startsAt ? `, from ${fmtTime(oh.startsAt - 30 * MIN)}` : ''}.
+                {first(host)} is hosting. You'll be told the moment they check in at the door{now < oh.startsAt - CHECKIN_OPENS_MIN * MIN ? `, from ${fmtTime(oh.startsAt - CHECKIN_OPENS_MIN * MIN)}` : ''}.
               </span>
             </Band>
           )}
           <div className="p-5">
-            <HostCard host={host} lister={me} phone note={requestBy(state, oh.id, host.id)?.note} />
             {alert ? (
-              <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                <a href={tel(host)} className={BUTTON_LINK_CN.outline}>
-                  <Phone size={16} />
-                  Call {first(host)}
-                </a>
-                <PressButton variant="danger" disabled={!!noShowReason} title={noShowReason ?? undefined} onClick={() => dispatch({ type: 'markNoShow', ohId: oh.id, now })}>
-                  Mark no-show
-                </PressButton>
+              <div className="mb-5">
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <a href={tel(host)} className={BUTTON_LINK_CN.outline}>
+                    <Phone size={16} />
+                    Call {first(host)}
+                  </a>
+                  <PressButton variant="danger" disabled={!!noShowReason} title={noShowReason ?? undefined} onClick={() => dispatch({ type: 'markNoShow', ohId: oh.id, now })}>
+                    Mark no-show
+                  </PressButton>
+                </div>
+                {noShowReason ? <p className="mt-2 text-[13px] text-mist">{noShowReason}</p> : null}
               </div>
             ) : null}
-            {alert && noShowReason ? <p className="mt-2 text-right text-[13px] text-mist">{noShowReason}</p> : null}
+            <HostCard host={host} lister={me} phone note={requestBy(state, oh.id, host.id)?.note} />
           </div>
         </Panel>
 
@@ -282,9 +294,11 @@ function ListerBody({ state, oh, me, now, dispatch }: { state: AppState; oh: Ope
                 return (
                   <li key={req.id} className="flex items-center gap-3 px-5 py-3 text-sm">
                     <Avatar initials={h.initials} size="sm" />
-                    <span className="font-medium text-ink">{h.name}</span>
-                    <span className="text-mist">{h.brokerage}</span>
-                    <span className="ml-auto text-sm tabular-nums text-mist">{h.hostRecord.hosted ? `${h.hostRecord.hosted} hosted` : 'New host'}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-medium text-ink">{h.name}</span>
+                      <span className="block text-mist">{h.brokerage}</span>
+                    </span>
+                    <span className="shrink-0 tabular-nums text-mist">{h.hostRecord.hosted ? `${h.hostRecord.hosted} hosted` : 'New host'}</span>
                   </li>
                 );
               })}
@@ -360,8 +374,6 @@ function HostBody({ state, oh, me, lister, now, dispatch }: { state: AppState; o
   const status = effectiveStatus(oh, now);
   const myReq = requestBy(state, oh.id, me.id);
   const [requesting, setRequesting] = useState(false);
-
-  if (oh.hostId === me.id) return <DayOf state={state} oh={oh} me={me} lister={lister} now={now} dispatch={dispatch} />;
 
   let body: ReactNode;
   if (myReq?.status === 'pending' && status === 'open') {
@@ -460,7 +472,8 @@ function HostBody({ state, oh, me, lister, now, dispatch }: { state: AppState; o
   );
 }
 
-function DayOf({ state, oh, me, lister, now, dispatch }: { state: AppState; oh: OpenHouse; me: Agent; lister: Agent; now: number; dispatch: Dispatch<Action> }) {
+function DayOf({ state, oh, lister, now, dispatch, back }: { state: AppState; oh: OpenHouse; lister: Agent; now: number; dispatch: Dispatch<Action>; back: ReactNode }) {
+  const me = state.agents[state.personaId];
   const [confirmCancel, setConfirmCancel] = useState(false);
   const checkInReason = canCheckIn(oh, now);
   const cancelReason = canHostCancel(oh, now);
@@ -473,13 +486,20 @@ function DayOf({ state, oh, me, lister, now, dispatch }: { state: AppState; oh: 
 
   return (
     <div className="mx-auto w-full max-w-md space-y-4">
+      {back}
       <Panel>
         <PanelBar title={fmtWhen(oh.startsAt, oh.endsAt, now)} aside={<StatusChip label={status.label} tone={status.tone} />} />
         <div className="p-5">
-          <h2 className="font-display text-xl font-semibold leading-tight tracking-tight text-ink">
+          <p className={KICKER_CN}>
+            {oh.neighborhood} {MIDDOT} {propertyLabel(oh.propertyType)}
+          </p>
+          <h1 className="mt-0.5 font-display text-xl font-semibold leading-tight tracking-tight text-ink">
             {oh.address}
             {oh.unit ? ` ${oh.unit}` : ''}
-          </h2>
+          </h1>
+          <p className="mt-1 text-sm text-ink">
+            <span className="font-semibold tabular-nums">{fmtMoney(oh.price)}</span> {MIDDOT} {oh.beds} bd / {oh.baths} ba
+          </p>
           <p className="mt-1 text-sm text-mist">
             Hosting for <span className="font-medium text-ink">{lister.name}</span> {MIDDOT}{' '}
             <a href={tel(lister)} className={INLINE_LINK_CN}>
@@ -487,6 +507,7 @@ function DayOf({ state, oh, me, lister, now, dispatch }: { state: AppState; oh: 
               Call
             </a>
           </p>
+          <p className="mt-1 text-sm text-mist">{termsSentenceHost(oh.fee)}</p>
           <ol className="mt-5 grid grid-cols-3 gap-1">
             {STEPS.map((label, i) => {
               const n = i + 1;
@@ -525,11 +546,6 @@ function DayOf({ state, oh, me, lister, now, dispatch }: { state: AppState; oh: 
         ) : null}
       </Panel>
 
-      <AccessPanel oh={oh} host={me} viewerIsHost dispatch={dispatch} now={now} />
-      <NotesPanel oh={oh} lister={lister} />
-
-      <p className="text-center text-sm text-mist">{termsSentenceHost(oh.fee)}</p>
-
       <div className="space-y-2">
         {oh.status === 'booked' ? (
           <>
@@ -551,6 +567,12 @@ function DayOf({ state, oh, me, lister, now, dispatch }: { state: AppState; oh: 
             Rate {first(lister)}
           </PressButton>
         ) : null}
+      </div>
+
+      <AccessPanel oh={oh} host={me} viewerIsHost dispatch={dispatch} now={now} />
+      <NotesPanel oh={oh} lister={lister} />
+
+      <div className="space-y-2">
         {oh.status === 'booked' && !cancelReason ? (
           <PressButton variant="danger" size="sm" className="w-full" onClick={() => setConfirmCancel(true)}>
             Can't make it? Cancel

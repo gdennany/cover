@@ -150,7 +150,7 @@ export function makeSeed(now: number): AppState {
       startsAt: now + 10 * MIN,
       endsAt: now + 10 * MIN + 2 * HOUR,
       fee: null,
-      notes: 'Garden level is a legal rental with its own entrance. Boiler was replaced in 2024. The owners are home upstairs until noon and will be out by the time you arrive.',
+      notes: 'Garden level is a legal rental with its own entrance. Boiler was replaced in 2024. The owners will be out by the time you arrive; text me if anyone is still home.',
       access: 'Keypad on the front door, code 2290#. The garden gate sticks; lift as you push.',
       status: 'booked',
       hostId: 'jordan',

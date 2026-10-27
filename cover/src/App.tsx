@@ -2,6 +2,7 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { Flash } from '@/components/Flash';
 import { Avatar } from '@/components/kit/Avatar';
+import { clockNow } from '@/lib/clock';
 import { reducer } from '@/lib/reducer';
 import { makeSeed } from '@/lib/seed';
 import type { Screen } from '@/lib/types';
@@ -25,7 +26,7 @@ const NAV: { label: string; screen: Screen }[] = [
 ];
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, undefined, () => makeSeed(Date.now()));
+  const [state, dispatch] = useReducer(reducer, undefined, () => makeSeed(clockNow()));
   const now = useNow();
   const me = state.agents[state.personaId];
   const clearFlash = useCallback(() => dispatch({ type: 'flash', message: null }), []);
@@ -85,7 +86,7 @@ export default function App() {
             </div>
             <button
               type="button"
-              onClick={() => dispatch({ type: 'reset', now: Date.now() })}
+              onClick={() => dispatch({ type: 'reset', now: clockNow() })}
               title="Reset demo"
               aria-label="Reset demo"
               className={cn('flex h-9 w-9 items-center justify-center rounded-full border border-line bg-paper text-mist hover:text-ink', FOCUS_CN)}
