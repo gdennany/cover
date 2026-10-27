@@ -24,10 +24,10 @@ Live demo: https://cover-fawn-iota.vercel.app
 
 ## Walkthrough (about three minutes)
 
-Switch personas with the Maya / Jordan control in the header. The circular arrow resets the data. Seed times are relative to the moment you open the page, so the day-of flow is always live, and the demo clock then stays put, so nothing expires while the tab is open. Opened outside 9 AM to 5 PM, the demo clock reads 11 AM instead, and Home shows the demo time.
+Switch between Maya (listing agent) and Jordan (host) in the header. The circular arrow resets the demo. Today's open houses are timed from the moment you open the page, so the day-of flow is live as soon as it loads, and nothing expires while the tab stays open ([how the demo clock works](#time)).
 
-1. **As Maya (listing agent):** Home shows what needs her. Open **412 Sterling Pl**, where three agents want to host. Compare the cards (license, brokerage, raw track record, their note) and approve Jordan. The others stay on a waitlist, and the access details go to Jordan only.
-2. **Switch to Jordan (host):** Find open houses. 77 Dean St is blocked because it overlaps 88 Carroll St, which he's hosting today. Filter to paid: 561 4th St is blocked too, because it overlaps 412 Sterling Pl, which Maya just approved him for. Clear the filter and request **140 Clinton Ave**.
+1. **As Maya (listing agent):** Home shows what needs Maya's attention. Open **412 Sterling Pl**, where three agents want to host. Compare the cards (license, brokerage, raw track record, their note) and approve Jordan. The others stay on a waitlist, and the access details go to Jordan only.
+2. **Switch to Jordan (host):** Find open houses. 77 Dean St is blocked because it overlaps 88 Carroll St, which Jordan hosts today. Filter to paid: 561 4th St is blocked too, because it overlaps 412 Sterling Pl, which Maya just approved Jordan for. Clear the filter and request **140 Clinton Ave**.
 3. **Still as Jordan:** from Home, open **88 Carroll St**. Show the access details (the view is logged), check in at the door, mark it done.
 4. **Back to Maya:** 88 Carroll St shows checked in and done. **215 Park Pl** has no check-in: call the host, or mark a no-show. The strike lands on their record.
 5. **As Maya:** Post an open house. It lands on the new post's empty state with the "add a fee" nudge.
