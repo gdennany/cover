@@ -26,8 +26,6 @@ What posting in your brokerage's group chat does well today is **handling trust*
 
 Therefore, the core problem this marketplace should solve is to facilitate open house coverage without sacrificing trust.
 
-*Context: 3 hour timebox. Original Problem Statement. Sources*
-
 ## User Definitions
 
 This is a two sided marketplace. Both sides are licensed agents, but the [data](#sources) suggests they're usually at different stages of their careers, which points to different motivations:
@@ -284,6 +282,16 @@ A clickable prototype built on mock data: the flows and states are real, the bac
 | 4 | **Day of:** access details, check in, mark done, plus the listing agent's "checked in" view | Host | Shows the no show protection working |
 | 5 | **Home:** what needs your attention, across both roles | Both | Ties the flows together. There's no separate profile screen: the listing agent sees a host's record as a host card on each request, and the host sees the listing agent's record on each post. |
 
+**Try it (about three minutes).** Switch between Maya and Jordan in the header. The circular arrow resets the demo; press it first if you come back later.
+
+1. **As Maya**, open 412 Sterling Pl, compare the three host cards, and approve Jordan.
+2. **As Jordan**, open Find open houses. 77 Dean St is blocked because it overlaps 88 Carroll St, which Jordan hosts today. Filter to paid: 561 4th St is blocked too, because it overlaps the open house Maya just approved Jordan for. Clear the filter and request 140 Clinton Ave.
+3. **Still as Jordan**, open 88 Carroll St from Home: show the access details, check in, and mark it done.
+4. **As Maya**, see 88 Carroll St checked in and done. 215 Park Pl has no check-in: call the host or mark a no-show.
+5. **As Maya**, post an open house.
+
+The full walkthrough, stack, and state machine are in the [README](https://github.com/gdennany/cover#readme).
+
 ## Sources
 
 1. NAR 2026 Member Profile (2025 data), via [HousingWire](https://www.housingwire.com/articles/nar-2026-member-profile-experience/) and the [NAR press release](https://www.nar.realtor/newsroom/experienced-realtors-anchor-the-industry-as-housing-affordability-remains-top-hurdle-new-nar-report)  
@@ -317,10 +325,10 @@ A few ground rules:
 **How I used them:**
 * **Research:** Claude web search for NAR data. When its first draft invented user types, I asked it to back each claim with a source. 
 * **Doc:** I defined the general structure and flow, and then worked through options/tradeoffs one section at a time with Claude. 
-* **Build:** Claude wrote most of the code. I set the scope: one reducer as a state machine, mocked data, minimal dependencies
+* **Build:** Claude wrote most of the code. I set the scope: one reducer as a state machine, mocked data, minimal dependencies.
 * **Design:** I pointed it at the design kit from my last project. That's a written list of things the UI must never do, including a single "trust score" in place of the raw track record. It also includes the color and spacing tokens, and a lint that fails the build on visual rule breaks like gradients and em dashes.
-* **Build and Review:** Multi agent orchestration turned the product doc into an implementation plan, implementer agent, code review and simplification agent, design review agent, sticking to the plan & keeping implementation minimal critique agent.
+* **Agent workflow:** One agent turned the product doc into an implementation plan, an implementer agent built it, and separate review agents checked code quality and simplicity, the design rules, and that the build stuck to the plan and stayed minimal.
 
 **What I checked by hand:** every flow in the demo as both personas, every number in User Definitions against its source, and every copy string against the "no filler stats" rule (it missed one; I fixed it).
 
-**Time Spent:** 4-5 hours total. ~3 hours defining product, ~1-2 hours generating & reviewing product into code.
+**Time:** 4-5 hours total. ~3 hours defining product, ~1-2 hours generating & reviewing product into code.
